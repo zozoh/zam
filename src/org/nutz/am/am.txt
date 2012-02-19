@@ -1,0 +1,18 @@
+#
+# 一个自动机的配置文件
+#
+* AmMain > NdBlock, NdUnknown | ?
+.   *              AmString     < > NdString | AmMain
+.   #              AmFind       < > NdUnknown | ?
+..     #           AmQuite      < > NdString | AmMain
+..     (           AmEl         < > NdEl | AmFind
+..     !           AmInclude    < > NdInclude | AmMain 
+..     =           AmVar        < > NdVar | AmMain
+..     _:          AmBegin      ! NdBlock < > NdBlock, NdString | AmMain
+..     if_(        AmIf         < > NdSwitch, NdIf, NdUnknown | AmEl
+..     in_(        AmIn         < > NdIn,  NdUnknown | AmFind
+..     elif_(      AmElif       ! NdBlock, NdIf, NdSwitch < <  > NdIf,   NdUnknown | AmEl  
+..     else        AmElse       ! NdBlock, NdIf, NdSwitch < <  > NdElse, NdUnknown | AmFind
+..     end#        AmEndLoop    < NdLoop | AmMain
+..     fi#         AmEndIf      ! NdBlock, NdCase, NdSwitch < < < | AmMain
+..     while_(     AmWhile      < > NdWhile, NdIf, NdUnknown | AmEl

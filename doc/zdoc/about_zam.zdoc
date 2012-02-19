@@ -1,0 +1,61 @@
+#title: 解析自动机
+#author:zozoh(zozohtnt@gmail.com)
+#index:0,1
+-------------------------------------------------------------------------------
+自动机配置表
+    
+    节点行为
+    {{{
+    Nd {
+        void     add(Nd);
+        boolean render();
+        boolean isEmpty();
+    }
+    }}}
+
+    工作栈
+    {{{
+    WorkingQueue<Nd> {
+        push(T);
+        pop();
+        peek();
+    }
+    }}}
+
+    根据自动机配置表，执行解析
+    {{{
+    * AmMain > NdBlock, NdUnknown | ? 
+    .   *              AmString     < > NdString | AmMain
+    .   #              AmFind       < > NdUnknown | ?
+    ..     #           AmQuite      < > NdString | AmMain
+    ..     (           AmEl         < > NdEl | AmFind
+    ..     !           AmInclude    < > NdInclude | AmMain 
+    ..     =           AmVar        < > NdVar | AmMain
+    ..     _:          AmBegin      ! NdBlock < > NdBlock, NdString | AmMain
+    ..     if_(        AmIf         < > NdSwitch, NdIf, NdUnknown | AmEl
+    ..     in_(        AmIn         < > NdIn,  NdUnknown | AmFind
+    ..     elif_(      AmElif       ! NdBlock, NdIf, NdSwitch < <  > NdIf,   NdUnknown | AmEl 
+    ..     else        AmElse       ! NdBlock, NdIf, NdSwitch < <  > NdElse, NdUnknown | AmFind
+    ..     end#        AmEndLoop    < NdLoop | AmMain
+    ..     fi#         AmEndIf      ! NdBlock, NdCase, NdSwitch < < < | AmMain
+    ..     while_(     AmWhile      < > NdWhile, NdIf, NdUnknown | AmEl
+    }}}
+
+    自动机的是一个解析类，根据配置文件进行解析，最后会组装成一个 Nd 的树形结构
+    {{{
+    AmRunner ----- Nd[] / int iHead  :: Working Queue
+              |--- boolean debug     
+              |--- AmBin             :: Tree
+    }}}
+
+
+
+
+
+
+
+
+
+
+
+
